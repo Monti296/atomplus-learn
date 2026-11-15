@@ -1,0 +1,45 @@
+# Dependencies and builds
+node_modules/
+dist/
+build/
+.next/
+coverage/
+*.tsbuildinfo
+
+# Secrets and local config (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+.dev.vars
+
+# Provider and tool folders
+.vercel/
+.wrangler/
+.turbo/
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS and editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Media, backups and temp files (never commit user or course data)
+*.mp4
+*.mov
+*.m3u8
+*.m4s
+tmp/
+uploads/
+backups/
+*.dump
+*.sql
+*.sql.gz
