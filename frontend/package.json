@@ -1,0 +1,22 @@
+{
+  "name": "@atomplus-learn/frontend",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "node --test",
+    "test:e2e": "node --test",
+    "build": "tsc -p tsconfig.json && vite build"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^6.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.3",
+    "@types/react-dom": "^19.0.2"
+  }
+}
