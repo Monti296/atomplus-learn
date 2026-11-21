@@ -55,9 +55,9 @@ _Login, users, My Profile, top navigation, deployment skeleton_
 - **Depends on:** T-000
 - **Area / size / priority:** infra / S / P0
 - **Acceptance criteria:**
-  - npm workspaces for frontend, backend, converter and gateway; Node LTS pinned
+  - Separate npm projects for frontend, backend, converter and gateway; Node LTS pinned in each project
   - TypeScript strict, ESLint, Prettier and the standard npm scripts exist in every package
-  - A fresh clone runs npm install and npm run lint
+  - A fresh clone installs and lints each package from its own folder
 - **Tests:** Lint passes on the empty scaffold.
 
 ### T-002: Backend skeleton

@@ -15,7 +15,16 @@ class ValidationProbeDto {
 @Controller('validation-probe')
 class ValidationProbeController {
   @Post()
-  create(@Body() _body: ValidationProbeDto): { status: 'ok' } {
+  create(
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        forbidNonWhitelisted: true,
+      }),
+    )
+    _body: ValidationProbeDto,
+  ): { status: 'ok' } {
     return { status: 'ok' };
   }
 }
