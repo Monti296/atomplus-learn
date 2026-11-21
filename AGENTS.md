@@ -85,14 +85,19 @@ Package manager: **npm** (exact versions are saved; `package-lock.json` is commi
 The scripts below are created in the first build task. Keep these names in every package.
 
 ```
-npm install          # install dependencies
-npm run dev          # run locally
+npm install          # install this package's dependencies
+npm run dev          # run this package locally
 npm run lint         # ESLint
 npm run format       # Prettier
 npm run test         # unit and integration tests
 npm run test:e2e     # end-to-end tests (Playwright)
 npm run build        # production build
 ```
+
+Run these commands from the package folder (`frontend/`, `backend/`,
+`converter/` or `gateway/`). There is no repository-root npm workspace:
+each deployable package owns its manifest, lockfile, dependencies and local
+tool configuration.
 
 ## 9. Testing expectations
 

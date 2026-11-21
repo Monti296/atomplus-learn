@@ -1,6 +1,10 @@
 {
-  "extends": "../tsconfig.base.json",
   "compilerOptions": {
+    "target": "ES2022",
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "dist",

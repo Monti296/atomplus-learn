@@ -34,7 +34,17 @@ docs/       PRD, technical design, security plan, Git workflow
 
 ## Getting started
 
-Setup instructions are added with the first code (build phase 1).
+Each deployable package is independent. Install and run it from its own folder:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Repeat the same pattern in `backend/`, `converter/` or `gateway/` for those
+packages. Do not install dependencies or run package scripts from the
+repository root.
 
 ## Documentation
 
