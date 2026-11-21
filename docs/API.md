@@ -2,6 +2,8 @@
 
 Base path: `/api/v1`. JSON over HTTPS. The NestJS code generates live documentation with Swagger; this file is the agreed outline and must match the code.
 
+The local interactive Swagger documentation is available at `/api/docs`.
+
 ## Conventions
 
 - **Auth:** every route needs a session cookie unless marked **Public**. **Admin** routes need the admin role.
