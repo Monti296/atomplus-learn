@@ -2,7 +2,7 @@
   "name": "@atomplus-learn/frontend",
   "private": true,
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 127.0.0.1",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "node --test",
