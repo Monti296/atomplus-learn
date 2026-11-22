@@ -44,3 +44,4 @@ backups/
 *.dump
 *.sql
 *.sql.gz
+!backend/prisma/migrations/**/*.sql
