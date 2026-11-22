@@ -35,6 +35,8 @@ describe('backend foundation', () => {
 
   before(async () => {
     process.env.FRONTEND_ORIGIN = 'http://localhost:5173';
+    process.env.DATABASE_URL =
+      'postgresql://postgres:postgres@localhost:5432/atomplus_learn_test';
     process.env.NODE_ENV = 'test';
     ({ createApp } = await import('../src/main'));
     app = await createApp();

@@ -4,6 +4,7 @@ export interface ValidatedEnvironment {
   NODE_ENV: AppEnvironment;
   PORT: number;
   FRONTEND_ORIGIN: string;
+  DATABASE_URL: string;
 }
 
 function parseEnvironment(value: unknown): AppEnvironment {
@@ -50,9 +51,15 @@ export function validateEnvironment(
     throw new Error('FRONTEND_ORIGIN must be an origin URL.');
   }
 
+  const databaseUrl = config.DATABASE_URL;
+  if (typeof databaseUrl !== 'string' || databaseUrl.trim() === '') {
+    throw new Error('DATABASE_URL is required.');
+  }
+
   return {
     NODE_ENV: parseEnvironment(config.NODE_ENV),
     PORT: parsePort(config.PORT),
     FRONTEND_ORIGIN: parsedOrigin.origin,
+    DATABASE_URL: databaseUrl,
   };
 }

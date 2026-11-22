@@ -16,4 +16,19 @@ npm run build
 npm start
 ```
 
-The API validates `NODE_ENV`, `PORT` and `FRONTEND_ORIGIN` at startup and stops if the frontend origin is missing or invalid.
+For local database work, start the throwaway PostgreSQL container from the
+repository root:
+
+```powershell
+docker compose up -d db
+```
+
+The API validates `NODE_ENV`, `PORT`, `FRONTEND_ORIGIN` and `DATABASE_URL` at
+startup. Apply migrations with `npm run db:migrate:deploy`. The database
+integration test resets the configured test database, applies all migrations
+to an empty database, and then tests creating and reading a user:
+
+```powershell
+$env:DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/atomplus_learn"
+npm run test:database
+```
