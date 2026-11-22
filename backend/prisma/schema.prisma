@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  employee
+  admin
+
+  @@map("user_role")
+}
+
+enum UserStatus {
+  active
+  blocked
+
+  @@map("user_status")
+}
+
+model User {
+  id                 String        @id @default(uuid()) @db.Uuid
+  name               String
+  email              String        @unique
+  passwordHash       String        @map("password_hash")
+  role               UserRole      @default(employee)
+  status             UserStatus    @default(active)
+  mustChangePassword Boolean       @default(true) @map("must_change_password")
+  createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  sessions           Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id               String   @id
+  userId           String   @map("user_id") @db.Uuid
+  expiresAt        DateTime @map("expires_at") @db.Timestamptz(6)
+  lastActivityAt   DateTime @map("last_activity_at") @db.Timestamptz(6)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model LoginAttempt {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String
+  ip           String
+  failedCount  Int      @default(0) @map("failed_count")
+  windowStart  DateTime @map("window_start") @db.Timestamptz(6)
+  blockedUntil DateTime? @map("blocked_until") @db.Timestamptz(6)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([email, ip])
+  @@map("login_attempts")
+}

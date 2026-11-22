@@ -1,29 +1,22 @@
 FROM node:24-alpine AS build
 
 WORKDIR /app
-COPY package*.json ./
-COPY backend/package.json backend/package.json
-COPY converter/package.json converter/package.json
-COPY frontend/package.json frontend/package.json
-COPY gateway/package.json gateway/package.json
-RUN npm ci
+COPY backend/package*.json ./backend/
+COPY backend/prisma ./backend/prisma
+RUN cd backend && npm ci && npx prisma generate
 
-COPY tsconfig.base.json ./
-COPY backend/tsconfig.json backend/tsconfig.json
-COPY backend/src backend/src
-RUN npm run build --workspace=@atomplus-learn/backend
+COPY backend/tsconfig.json ./backend/
+COPY backend/src ./backend/src
+RUN cd backend && npm run build
 
 FROM node:24-alpine
 
-WORKDIR /app
+WORKDIR /app/backend
 ENV NODE_ENV=production
-COPY package*.json ./
-COPY backend/package.json backend/package.json
-COPY converter/package.json converter/package.json
-COPY frontend/package.json frontend/package.json
-COPY gateway/package.json gateway/package.json
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma
 RUN npm ci --omit=dev
-COPY --from=build /app/backend/dist backend/dist
+COPY --from=build /app/backend/dist ./dist
 
 EXPOSE 3000
-CMD ["node", "backend/dist/main.js"]
+CMD ["node", "dist/main.js"]
