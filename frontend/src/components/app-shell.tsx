@@ -6,13 +6,14 @@ const placeholderInitials = 'AP';
 
 export function AppShell() {
   return (
-    <div className="min-h-dvh bg-page text-ink">
+    <div className="isolate min-h-dvh bg-page text-ink">
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
       >
-        <div className="absolute -top-24 -right-24 size-96 rounded-full bg-lilac opacity-80 blur-3xl" />
-        <div className="absolute -bottom-32 -left-24 size-[28rem] rounded-full bg-accent/40 blur-3xl" />
+        <div className="absolute -top-20 -right-20 size-[32rem] rounded-full bg-accent/70 blur-3xl" />
+        <div className="absolute top-1/3 -left-32 size-[26rem] rounded-full bg-lilac blur-3xl" />
+        <div className="absolute -bottom-40 right-0 size-[30rem] rounded-full bg-accent/60 blur-3xl" />
       </div>
 
       <TopBar userInitials={placeholderInitials} />
