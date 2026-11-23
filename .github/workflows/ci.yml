@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  packages:
+    name: ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: [frontend, converter, gateway]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: ${{ matrix.package }}/.nvmrc
+          cache: npm
+          cache-dependency-path: ${{ matrix.package }}/package-lock.json
+      - name: Install
+        working-directory: ${{ matrix.package }}
+        run: npm ci
+      - name: Lint
+        working-directory: ${{ matrix.package }}
+        run: npm run lint
+      - name: Build
+        working-directory: ${{ matrix.package }}
+        run: npm run build
+      - name: Test
+        working-directory: ${{ matrix.package }}
+        run: npm test
+
+  backend:
+    name: backend
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        # Throwaway database for tests only. Never a production or Neon database.
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: atomplus_learn_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/atomplus_learn_test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: backend/.nvmrc
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install
+        working-directory: backend
+        run: npm ci
+      - name: Generate database client
+        working-directory: backend
+        run: npm run db:generate
+      - name: Lint
+        working-directory: backend
+        run: npm run lint
+      - name: Build
+        working-directory: backend
+        run: npm run build
+      - name: Test
+        working-directory: backend
+        run: npm test
+      - name: Database tests
+        working-directory: backend
+        run: npm run test:database

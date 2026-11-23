@@ -31,7 +31,7 @@ Rules: one logical change per commit, summary under about 72 characters, explain
 
 1. Push the branch and open a PR into `main` using the template.
 2. Link the issue with `Closes #<number>`.
-3. Wait for automated checks (added in the CI step) to pass.
+3. Wait for the automated checks in `.github/workflows/ci.yml` to pass. They run on every pull request: install, lint, build and tests for `frontend`, `converter`, `gateway` and `backend`. The backend tests run against a throwaway Postgres database inside the check, never against Neon.
 4. Read your own diff line by line before merging, especially AI-generated code.
 5. Merge with **squash and merge**, using a Conventional Commit title, so `main` has one clean commit per change.
 
