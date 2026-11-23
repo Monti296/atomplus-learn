@@ -28,9 +28,9 @@ Cite the requirement ids (for example FR-4.8, SR-9) in commits, tests and pull r
 | Database | n/a | Neon PostgreSQL |
 | Storage | n/a | Cloudflare R2 (S3-compatible API), private buckets |
 | Video gateway | `gateway/` | Cloudflare Worker: verifies signed token, streams HLS from R2 |
-| Converter | `converter/` | FFmpeg: MP4 to HLS (480p and 720p). Runs outside the API, as a GitHub Actions workflow in the free phase |
+| Converter | `converter/` | FFmpeg: MP4 to HLS (480p and 720p). Runs outside the API |
 
-Package manager: **npm** (exact versions are saved; `package-lock.json` is committed). Node.js 24 LTS is pinned in `.nvmrc`; `engines` allows Node 22 and newer.
+Package manager: **npm**. Pin Node.js to the current LTS in `.nvmrc` and `engines`.
 
 ## 4. Business rules you must not break
 
@@ -85,19 +85,14 @@ Package manager: **npm** (exact versions are saved; `package-lock.json` is commi
 The scripts below are created in the first build task. Keep these names in every package.
 
 ```
-npm install          # install this package's dependencies
-npm run dev          # run this package locally
+npm install          # install dependencies
+npm run dev          # run locally
 npm run lint         # ESLint
 npm run format       # Prettier
 npm run test         # unit and integration tests
 npm run test:e2e     # end-to-end tests (Playwright)
 npm run build        # production build
 ```
-
-Run these commands from the package folder (`frontend/`, `backend/`,
-`converter/` or `gateway/`). There is no repository-root npm workspace:
-each deployable package owns its manifest, lockfile, dependencies and local
-tool configuration.
 
 ## 9. Testing expectations
 
@@ -113,7 +108,7 @@ Follow `docs/TEST-PLAN.md`. In short: backend unit and integration tests for eve
 6. **Run** lint and tests before saying a task is done, and state what you ran and what you did not.
 7. **Never** push, merge, deploy, delete data or change settings or secrets without explicit approval.
 8. Treat generated code as unreviewed: the owner reads every diff.
-9. **Teach as you go.** The owner is not an expert programmer. Explain every step in plain, simple English: what you did, why, and how to see it working. Explain a technical term the first time you use it. End each task with the report described in `.github/prompts/implement-task.prompt.md`.
+9. **Teach as you go.** The owner is not an expert programmer. Explain every step in plain, simple English: what you did, why, and how to see it working. Explain a technical term the first time you use it. End each task with the report described in `.github/skills/implement-task.prompt.md`.
 10. **Never ask the owner to paste secrets** (keys, passwords, database URLs) into chat. Say where they go instead (provider settings or an uncommitted `.env`).
 
 ## 11. Definition of done

@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-page: #f4eeff;
+  --color-lilac: #dcd6f7;
+  --color-accent: #a6b1e1;
+  --color-indigo: #424874;
+  --color-ink: #2b2f52;
+  --color-night: #1e2140;
+}
+
+@utility glass-card {
+  background-color: rgb(255 255 255 / 0.55);
+  border: 1px solid rgb(255 255 255 / 0.8);
+  border-radius: 1.25rem;
+  box-shadow: 0 8px 24px rgb(66 72 116 / 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
