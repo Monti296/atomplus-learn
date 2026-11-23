@@ -108,7 +108,7 @@ Follow `docs/TEST-PLAN.md`. In short: backend unit and integration tests for eve
 6. **Run** lint and tests before saying a task is done, and state what you ran and what you did not.
 7. **Never** push, merge, deploy, delete data or change settings or secrets without explicit approval.
 8. Treat generated code as unreviewed: the owner reads every diff.
-9. **Teach as you go.** The owner is not an expert programmer. Explain every step in plain, simple English: what you did, why, and how to see it working. Explain a technical term the first time you use it. End each task with the report described in `.github/skills/implement-task.prompt.md`.
+9. **Teach as you go.** The owner is not an expert programmer. Explain every step in plain, simple English: what you did, why, and how to see it working. Explain a technical term the first time you use it. End each task with the report described in `.github/skills/implement-task/SKILL.md`.
 10. **Never ask the owner to paste secrets** (keys, passwords, database URLs) into chat. Say where they go instead (provider settings or an uncommitted `.env`).
 
 ## 11. Definition of done
