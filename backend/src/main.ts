@@ -3,7 +3,11 @@ import helmet from 'helmet';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ForbiddenException, ValidationPipe } from '@nestjs/common';
+import {
+  ForbiddenException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { json, type NextFunction, type Request, type Response } from 'express';
 import { AppModule } from './app.module';
 import { ErrorResponseFilter } from './common/error-response.filter';
@@ -11,6 +15,12 @@ import { ValidatedEnvironment } from './config/environment';
 
 export async function createApp() {
   const app = await NestFactory.create(AppModule, { bodyParser: false });
+  configureApp(app);
+  return app;
+}
+
+// Shared by the real app and the tests, so both get the same security setup.
+export function configureApp(app: INestApplication): void {
   const config = app.get(ConfigService<ValidatedEnvironment, true>);
   const frontendOrigin = config.get('FRONTEND_ORIGIN', { infer: true });
 
@@ -57,8 +67,6 @@ export async function createApp() {
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document);
-
-  return app;
 }
 
 async function bootstrap(): Promise<void> {
