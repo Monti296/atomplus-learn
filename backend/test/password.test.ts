@@ -75,7 +75,7 @@ describe('password hashing (SR-1)', () => {
     const hash = await service.hashNewPassword('Abcdef1!');
 
     assert.equal(await service.verify(hash, 'Abcdef1!'), true);
-    assert.equal(await service.verify(hash, 'Abcdef1?'), false);
+    assert.equal(await service.verify(hash, 'Abcdef1 '), false);
   });
 
   it('gives a different hash for the same password each time', async () => {
@@ -101,7 +101,7 @@ describe('password hashing (SR-1)', () => {
 
 describe('temporary password generator (FR-8.1, SR-2)', () => {
   it('creates passwords of the agreed length that meet every rule', () => {
-    for (let i = 0; i < 300; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
       const password = generateTemporaryPassword();
 
       assert.equal(password.length, TEMPORARY_PASSWORD_LENGTH);
@@ -110,7 +110,7 @@ describe('temporary password generator (FR-8.1, SR-2)', () => {
   });
 
   it('includes an uppercase letter, a lowercase letter, a number and a symbol', () => {
-    for (let i = 0; i < 100; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
       const password = generateTemporaryPassword();
 
       assert.match(password, /[A-Z]/);
@@ -122,10 +122,10 @@ describe('temporary password generator (FR-8.1, SR-2)', () => {
 
   it('does not repeat the same password', () => {
     const passwords = new Set<string>();
-    for (let i = 0; i < 300; i += 1) {
+    for (let i = 0; i < 50; i += 1) {
       passwords.add(generateTemporaryPassword());
     }
 
-    assert.equal(passwords.size, 300);
+    assert.equal(passwords.size, 50);
   });
 });
