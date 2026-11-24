@@ -5,6 +5,7 @@ export interface ValidatedEnvironment {
   PORT: number;
   FRONTEND_ORIGIN: string;
   DATABASE_URL: string;
+  COOKIE_DOMAIN?: string;
 }
 
 function parseEnvironment(value: unknown): AppEnvironment {
@@ -30,6 +31,18 @@ function parsePort(value: unknown): number {
   }
 
   return port;
+}
+
+function parseCookieDomain(value: unknown): string | undefined {
+  if (value === undefined || value === '') {
+    return undefined;
+  }
+
+  if (typeof value !== 'string' || !/^[a-z0-9.-]+$/i.test(value)) {
+    throw new Error('COOKIE_DOMAIN must be a domain name such as atomplus.in.');
+  }
+
+  return value;
 }
 
 export function validateEnvironment(
@@ -61,5 +74,6 @@ export function validateEnvironment(
     PORT: parsePort(config.PORT),
     FRONTEND_ORIGIN: parsedOrigin.origin,
     DATABASE_URL: databaseUrl,
+    COOKIE_DOMAIN: parseCookieDomain(config.COOKIE_DOMAIN),
   };
 }
