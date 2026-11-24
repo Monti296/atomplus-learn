@@ -44,6 +44,18 @@ export class ErrorResponseFilter implements ExceptionFilter {
   }
 
   private getHttpErrorBody(exception: HttpException): ErrorResponseBody {
+    const response = exception.getResponse();
+    if (
+      typeof response === 'object' &&
+      response !== null &&
+      'code' in response &&
+      'message' in response &&
+      typeof response.code === 'string' &&
+      typeof response.message === 'string'
+    ) {
+      return { code: response.code, message: response.message };
+    }
+
     if (exception.getStatus() === HttpStatus.BAD_REQUEST) {
       return {
         code: 'VALIDATION_ERROR',
