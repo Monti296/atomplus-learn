@@ -18,7 +18,7 @@ The local interactive Swagger documentation is available at `/api/docs`.
 | Method | Path | Access | Purpose |
 |---|---|---|---|
 | POST | /setup/first-admin | Public, only while no admin exists | Create the first admin |
-| POST | /auth/login | Public | Log in with email and password |
+| POST | /auth/login | Public | Log in with email and password; 429 `TOO_MANY_ATTEMPTS` after 5 failures for the same email and address in 15 minutes, with a growing delay (1 to 15 minutes) |
 | POST | /auth/logout | User | End the session |
 | GET | /me | User | Current user (name, email, role, mustChangePassword) |
 | PATCH | /me | User | Change own name |

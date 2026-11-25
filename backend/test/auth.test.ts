@@ -12,6 +12,10 @@ import { Test } from '@nestjs/testing';
 import { PrismaClient, UserRole, UserStatus } from '@prisma/client';
 import request from 'supertest';
 import { AdminGuard } from '../src/auth/admin.guard';
+import {
+  loginBlockDelayMs,
+  MAX_FAILED_ATTEMPTS,
+} from '../src/auth/login-attempts.service';
 import { PasswordService } from '../src/auth/password/password.service';
 import { resetTestDatabase } from './database-test-helper';
 
@@ -420,6 +424,165 @@ describe('login, logout, sessions and guards (FR-1, SR-4 to SR-7)', () => {
         unchanged.lastActivityAt.getTime(),
         recentActivity.getTime(),
       );
+    });
+  });
+
+  describe('login rate limiting (SR-3)', () => {
+    const ADDRESS = '203.0.113.10';
+    const WRONG_PASSWORD = 'Wrong#Password1';
+
+    function attemptLogin(email: string, password: string, address = ADDRESS) {
+      return request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .set('Origin', FRONTEND_ORIGIN)
+        .set('X-Forwarded-For', address)
+        .send({ email, password });
+    }
+
+    async function failLogins(
+      email: string,
+      count: number,
+      address = ADDRESS,
+    ): Promise<void> {
+      for (let i = 0; i < count; i += 1) {
+        await attemptLogin(email, WRONG_PASSWORD, address);
+      }
+    }
+
+    function attemptRow(email: string, address = ADDRESS) {
+      return prisma.loginAttempt.findUniqueOrThrow({
+        where: { email_ip: { email, ip: address } },
+      });
+    }
+
+    it('refuses the sixth failed login with 429 and the same message', async () => {
+      await createUser();
+
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS);
+      const sixth = await attemptLogin('employee@example.com', WRONG_PASSWORD);
+
+      assert.equal(sixth.status, 429);
+      assert.deepEqual(sixth.body, {
+        code: 'TOO_MANY_ATTEMPTS',
+        message:
+          'Too many failed login attempts. Please wait a few minutes and try again.',
+      });
+    });
+
+    it('keeps the fifth failed login as an ordinary wrong-password error', async () => {
+      await createUser();
+
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS - 1);
+      const fifth = await attemptLogin('employee@example.com', WRONG_PASSWORD);
+
+      assert.equal(fifth.status, 401);
+      assert.equal(fifth.body.code, 'INVALID_CREDENTIALS');
+    });
+
+    it('refuses the correct password while the pair is blocked', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS);
+
+      const response = await attemptLogin('employee@example.com', PASSWORD);
+
+      assert.equal(response.status, 429);
+      assert.equal(response.body.code, 'TOO_MANY_ATTEMPTS');
+      assert.equal(await prisma.session.count(), 0);
+    });
+
+    it('gives the same refusal for an unknown email as for a known one', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS);
+      await failLogins('nobody@example.com', MAX_FAILED_ATTEMPTS);
+
+      const known = await attemptLogin('employee@example.com', WRONG_PASSWORD);
+      const unknown = await attemptLogin('nobody@example.com', WRONG_PASSWORD);
+
+      assert.equal(known.status, 429);
+      assert.equal(unknown.status, 429);
+      assert.deepEqual(unknown.body, known.body);
+    });
+
+    it('counts each email and address pair separately', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS);
+
+      const otherAddress = await attemptLogin(
+        'employee@example.com',
+        PASSWORD,
+        '203.0.113.99',
+      );
+
+      assert.equal(otherAddress.status, 200);
+    });
+
+    it('stores the block in the database with a one-minute first delay', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS);
+
+      const row = await attemptRow('employee@example.com');
+      assert.ok(row.blockedUntil);
+      const remainingMs = row.blockedUntil.getTime() - Date.now();
+      assert.ok(remainingMs > MINUTE_MS - 5000);
+      assert.ok(remainingMs <= MINUTE_MS);
+    });
+
+    it('makes the delay grow with each further failure', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS);
+      await prisma.loginAttempt.update({
+        where: { email_ip: { email: 'employee@example.com', ip: ADDRESS } },
+        data: { blockedUntil: new Date(Date.now() - 1000) },
+      });
+
+      await failLogins('employee@example.com', 1);
+
+      const row = await attemptRow('employee@example.com');
+      const remainingMs = (row.blockedUntil?.getTime() ?? 0) - Date.now();
+      assert.ok(remainingMs > 2 * MINUTE_MS - 5000);
+      assert.ok(remainingMs <= 2 * MINUTE_MS);
+    });
+
+    it('starts a new 15-minute window after the old one ends', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS - 1);
+      await prisma.loginAttempt.update({
+        where: { email_ip: { email: 'employee@example.com', ip: ADDRESS } },
+        data: { windowStart: new Date(Date.now() - 16 * MINUTE_MS) },
+      });
+
+      await failLogins('employee@example.com', 1);
+
+      const row = await attemptRow('employee@example.com');
+      assert.equal(row.failedCount, 1);
+      assert.equal(row.blockedUntil, null);
+    });
+
+    it('clears the counter after a successful login', async () => {
+      await createUser();
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS - 1);
+
+      const success = await attemptLogin('employee@example.com', PASSWORD);
+      assert.equal(success.status, 200);
+      await failLogins('employee@example.com', MAX_FAILED_ATTEMPTS - 1);
+
+      const next = await attemptLogin('employee@example.com', WRONG_PASSWORD);
+      assert.equal(next.status, 401);
+      assert.equal(
+        await prisma.loginAttempt.count({
+          where: { email: 'employee@example.com' },
+        }),
+        1,
+      );
+    });
+
+    it('caps the block delay at 15 minutes and doubles it before that', () => {
+      assert.equal(loginBlockDelayMs(5), 60 * 1000);
+      assert.equal(loginBlockDelayMs(6), 2 * 60 * 1000);
+      assert.equal(loginBlockDelayMs(7), 4 * 60 * 1000);
+      assert.equal(loginBlockDelayMs(8), 8 * 60 * 1000);
+      assert.equal(loginBlockDelayMs(9), 15 * 60 * 1000);
+      assert.equal(loginBlockDelayMs(50), 15 * 60 * 1000);
     });
   });
 });

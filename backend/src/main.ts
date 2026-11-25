@@ -25,6 +25,9 @@ export function configureApp(app: INestApplication): void {
   const frontendOrigin = config.get('FRONTEND_ORIGIN', { infer: true });
 
   app.setGlobalPrefix('api/v1');
+  // Render puts one proxy in front of the API. Trusting exactly one hop makes
+  // request.ip the real visitor, so one person cannot lock out everyone (SR-3).
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
   app.use(helmet());
   app
     .getHttpAdapter()
