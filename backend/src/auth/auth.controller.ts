@@ -41,7 +41,11 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ): Promise<CurrentUserResponse> {
-    const user = await this.auth.verifyCredentials(body.email, body.password);
+    const user = await this.auth.verifyCredentials(
+      body.email,
+      body.password,
+      request.ip ?? 'unknown',
+    );
 
     // A new session at every login; an old session from this browser is removed (SR-4).
     const previousSessionId = readSessionId(request.headers.cookie);

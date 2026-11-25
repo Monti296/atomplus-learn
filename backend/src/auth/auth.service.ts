@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import type { User } from '@prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { LoginAttemptsService } from './login-attempts.service';
 import { generateTemporaryPassword } from './password/temporary-password';
 import { PasswordService } from './password/password.service';
 
@@ -16,11 +17,19 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly passwordService: PasswordService,
+    private readonly loginAttempts: LoginAttemptsService,
   ) {}
 
   // Same error for unknown email, wrong password and blocked user, so nothing
   // reveals which part was wrong (FR-1.1, FR-1.3).
-  async verifyCredentials(email: string, password: string): Promise<User> {
+  async verifyCredentials(
+    email: string,
+    password: string,
+    ip: string,
+  ): Promise<User> {
+    // Checked before the password, so a blocked pair cannot keep guessing (SR-3).
+    await this.loginAttempts.assertNotBlocked(email, ip);
+
     const user = await this.prisma.user.findUnique({ where: { email } });
 
     // Checking a password even for unknown emails makes both cases take the same time.
@@ -28,9 +37,11 @@ export class AuthService {
     const passwordMatches = await this.passwordService.verify(hash, password);
 
     if (!user || !passwordMatches || user.status !== 'active') {
+      await this.loginAttempts.recordFailure(email, ip);
       throw new UnauthorizedException(INVALID_CREDENTIALS_ERROR);
     }
 
+    await this.loginAttempts.clear(email, ip);
     return user;
   }
 
