@@ -6,13 +6,16 @@ import { AuthService } from './auth.service';
 import { MeController } from './me.controller';
 import { PasswordService } from './password/password.service';
 import { SessionsService } from './sessions.service';
+import { SetupController } from './setup.controller';
+import { SetupService } from './setup.service';
 
 @Module({
-  controllers: [AuthController, MeController],
+  controllers: [AuthController, MeController, SetupController],
   providers: [
     AuthService,
     PasswordService,
     SessionsService,
+    SetupService,
     { provide: APP_GUARD, useClass: AuthGuard },
   ],
 })

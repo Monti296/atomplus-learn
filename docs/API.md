@@ -17,7 +17,7 @@ The local interactive Swagger documentation is available at `/api/docs`.
 
 | Method | Path | Access | Purpose |
 |---|---|---|---|
-| POST | /setup/first-admin | Public, only while no admin exists | Create the first admin |
+| POST | /setup/first-admin | Public, needs header `X-Setup-Token` (the server's `SETUP_TOKEN`), only while no admin exists; 404 when `SETUP_TOKEN` is not set | Create the first admin (name, email, password); does not log them in |
 | POST | /auth/login | Public | Log in with email and password |
 | POST | /auth/logout | User | End the session |
 | GET | /me | User | Current user (name, email, role, mustChangePassword) |

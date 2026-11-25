@@ -6,6 +6,7 @@ export interface ValidatedEnvironment {
   FRONTEND_ORIGIN: string;
   DATABASE_URL: string;
   COOKIE_DOMAIN?: string;
+  SETUP_TOKEN?: string;
 }
 
 function parseEnvironment(value: unknown): AppEnvironment {
@@ -45,6 +46,19 @@ function parseCookieDomain(value: unknown): string | undefined {
   return value;
 }
 
+// Without a setup token the first-admin route is switched off (SR-6, FR-1.6).
+function parseSetupToken(value: unknown): string | undefined {
+  if (value === undefined || value === '') {
+    return undefined;
+  }
+
+  if (typeof value !== 'string' || value.length < 32) {
+    throw new Error('SETUP_TOKEN must be at least 32 characters.');
+  }
+
+  return value;
+}
+
 export function validateEnvironment(
   config: Record<string, unknown>,
 ): ValidatedEnvironment {
@@ -75,5 +89,6 @@ export function validateEnvironment(
     FRONTEND_ORIGIN: parsedOrigin.origin,
     DATABASE_URL: databaseUrl,
     COOKIE_DOMAIN: parseCookieDomain(config.COOKIE_DOMAIN),
+    SETUP_TOKEN: parseSetupToken(config.SETUP_TOKEN),
   };
 }
