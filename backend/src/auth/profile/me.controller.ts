@@ -8,9 +8,9 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AllowDuringPasswordChange } from './allow-during-password-change.decorator';
-import { type AuthenticatedRequest } from './auth.guard';
-import { type CurrentUserResponse, toCurrentUser } from './auth-user';
+import { AllowDuringPasswordChange } from '../decorators/allow-during-password-change.decorator';
+import { type AuthenticatedRequest } from '../guards/auth.guard';
+import { type CurrentUserResponse, toCurrentUser } from '../auth-user';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
 import { ProfileService } from './profile.service';

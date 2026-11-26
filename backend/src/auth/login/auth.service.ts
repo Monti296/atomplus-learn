@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import type { User } from '@prisma/client';
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { LoginAttemptsService } from './login-attempts.service';
-import { generateTemporaryPassword } from './password/temporary-password';
-import { PasswordService } from './password/password.service';
+import { generateTemporaryPassword } from '../password/temporary-password';
+import { PasswordService } from '../password/password.service';
 
 export const INVALID_CREDENTIALS_ERROR = {
   code: 'INVALID_CREDENTIALS',

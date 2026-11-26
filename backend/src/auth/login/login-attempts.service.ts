@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 
 export const TOO_MANY_ATTEMPTS_ERROR = {
   code: 'TOO_MANY_ATTEMPTS',

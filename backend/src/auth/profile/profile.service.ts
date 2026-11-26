@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import type { User } from '@prisma/client';
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { UpdateMeDto } from './dto/update-me.dto';
 import {
   PasswordPolicyError,
   PasswordService,
-} from './password/password.service';
-import { WEAK_PASSWORD_ERROR } from './setup.service';
+} from '../password/password.service';
+import { WEAK_PASSWORD_ERROR } from '../setup/setup.service';
 
 export const CURRENT_PASSWORD_INCORRECT_ERROR = {
   code: 'CURRENT_PASSWORD_INCORRECT',

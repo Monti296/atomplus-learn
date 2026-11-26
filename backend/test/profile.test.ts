@@ -11,7 +11,7 @@ import {
 import { Test } from '@nestjs/testing';
 import { PrismaClient, UserRole, UserStatus } from '@prisma/client';
 import request from 'supertest';
-import { AdminGuard } from '../src/auth/admin.guard';
+import { AdminGuard } from '../src/auth/guards/admin.guard';
 import { PasswordService } from '../src/auth/password/password.service';
 import { resetTestDatabase } from './database-test-helper';
 

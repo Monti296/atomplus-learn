@@ -8,13 +8,13 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Prisma, UserRole, UserStatus, type User } from '@prisma/client';
 import { createHash, timingSafeEqual } from 'node:crypto';
-import { PrismaService } from '../database/prisma.service';
-import type { ValidatedEnvironment } from '../config/environment';
+import { PrismaService } from '../../database/prisma.service';
+import type { ValidatedEnvironment } from '../../config/environment';
 import type { FirstAdminDto } from './dto/first-admin.dto';
 import {
   PasswordPolicyError,
   PasswordService,
-} from './password/password.service';
+} from '../password/password.service';
 
 export const INVALID_SETUP_TOKEN_ERROR = {
   code: 'SETUP_TOKEN_INVALID',

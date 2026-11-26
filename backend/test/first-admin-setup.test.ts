@@ -6,7 +6,7 @@ import { Test } from '@nestjs/testing';
 import { PrismaClient, UserRole, UserStatus } from '@prisma/client';
 import request from 'supertest';
 import { PasswordService } from '../src/auth/password/password.service';
-import { SetupService } from '../src/auth/setup.service';
+import { SetupService } from '../src/auth/setup/setup.service';
 import {
   validateEnvironment,
   type ValidatedEnvironment,

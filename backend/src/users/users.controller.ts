@@ -14,8 +14,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { AdminGuard } from '../auth/admin.guard';
-import { type AuthenticatedRequest } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
+import { type AuthenticatedRequest } from '../auth/guards/auth.guard';
 import { toAdminUser, type AdminUserResponse } from './admin-user-response';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ListUsersQuery } from './dto/list-users.query';

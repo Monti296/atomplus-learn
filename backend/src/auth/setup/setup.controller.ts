@@ -7,9 +7,9 @@ import {
   Post,
 } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
-import { type CurrentUserResponse, toCurrentUser } from './auth-user';
+import { type CurrentUserResponse, toCurrentUser } from '../auth-user';
 import { FirstAdminDto } from './dto/first-admin.dto';
-import { Public } from './public.decorator';
+import { Public } from '../decorators/public.decorator';
 import { SetupService } from './setup.service';
 
 @ApiTags('setup')

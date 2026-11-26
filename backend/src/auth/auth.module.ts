@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthController } from './auth.controller';
-import { AuthGuard } from './auth.guard';
-import { AuthService } from './auth.service';
-import { LoginAttemptsService } from './login-attempts.service';
-import { MeController } from './me.controller';
+import { AuthController } from './login/auth.controller';
+import { AuthGuard } from './guards/auth.guard';
+import { AuthService } from './login/auth.service';
+import { LoginAttemptsService } from './login/login-attempts.service';
+import { MeController } from './profile/me.controller';
 import { PasswordService } from './password/password.service';
-import { ProfileService } from './profile.service';
-import { SessionsService } from './sessions.service';
-import { SetupController } from './setup.controller';
-import { SetupService } from './setup.service';
+import { ProfileService } from './profile/profile.service';
+import { SessionsService } from './sessions/sessions.service';
+import { SetupController } from './setup/setup.controller';
+import { SetupService } from './setup/setup.service';
 
 @Module({
   controllers: [AuthController, MeController, SetupController],

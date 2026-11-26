@@ -8,17 +8,17 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import type { Request, Response } from 'express';
-import type { ValidatedEnvironment } from '../config/environment';
-import { ALLOW_DURING_PASSWORD_CHANGE_KEY } from './allow-during-password-change.decorator';
-import type { AuthUser } from './auth-user';
-import { IS_PUBLIC_KEY } from './public.decorator';
-import { SessionsService } from './sessions.service';
+import type { ValidatedEnvironment } from '../../config/environment';
+import { ALLOW_DURING_PASSWORD_CHANGE_KEY } from '../decorators/allow-during-password-change.decorator';
+import type { AuthUser } from '../auth-user';
+import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { SessionsService } from '../sessions/sessions.service';
 import {
   readSessionId,
   SESSION_COOKIE_NAME,
   SESSION_IDLE_LIFETIME_MS,
   sessionCookieOptions,
-} from './session-cookie';
+} from '../sessions/session-cookie';
 
 export interface AuthenticatedRequest extends Request {
   authUser: AuthUser;

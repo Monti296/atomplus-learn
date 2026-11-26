@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Prisma, UserRole, UserStatus, type User } from '@prisma/client';
-import { EMAIL_TAKEN_ERROR } from '../auth/setup.service';
+import { EMAIL_TAKEN_ERROR } from '../auth/setup/setup.service';
 import { PasswordService } from '../auth/password/password.service';
 import { generateTemporaryPassword } from '../auth/password/temporary-password';
 import { PrismaService } from '../database/prisma.service';

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { readSessionId } from '../src/auth/session-cookie';
+import { readSessionId } from '../src/auth/sessions/session-cookie';
 
 const SESSION_ID = 'a'.repeat(42) + '_';
 

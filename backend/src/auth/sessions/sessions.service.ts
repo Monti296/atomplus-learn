@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
-import { PrismaService } from '../database/prisma.service';
+import { PrismaService } from '../../database/prisma.service';
 import { SESSION_IDLE_LIFETIME_MS } from './session-cookie';
-import type { AuthUser } from './auth-user';
+import type { AuthUser } from '../auth-user';
 
 // Refreshing the database row on every request would slow down every page,
 // so activity is saved at most once every 5 minutes.

@@ -10,20 +10,20 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
-import type { ValidatedEnvironment } from '../config/environment';
-import { AllowDuringPasswordChange } from './allow-during-password-change.decorator';
+import type { ValidatedEnvironment } from '../../config/environment';
+import { AllowDuringPasswordChange } from '../decorators/allow-during-password-change.decorator';
 import { AuthService } from './auth.service';
-import { type AuthenticatedRequest } from './auth.guard';
-import { type CurrentUserResponse, toCurrentUser } from './auth-user';
+import { type AuthenticatedRequest } from '../guards/auth.guard';
+import { type CurrentUserResponse, toCurrentUser } from '../auth-user';
 import { LoginDto } from './dto/login.dto';
-import { Public } from './public.decorator';
-import { SessionsService } from './sessions.service';
+import { Public } from '../decorators/public.decorator';
+import { SessionsService } from '../sessions/sessions.service';
 import {
   readSessionId,
   SESSION_COOKIE_NAME,
   SESSION_IDLE_LIFETIME_MS,
   sessionCookieOptions,
-} from './session-cookie';
+} from '../sessions/session-cookie';
 
 @ApiTags('auth')
 @Controller('auth')

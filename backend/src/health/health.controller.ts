@@ -1,6 +1,6 @@
 import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
 import { IsOptional, IsString } from 'class-validator';
-import { Public } from '../auth/public.decorator';
+import { Public } from '../auth/decorators/public.decorator';
 
 export class HealthQueryDto {
   @IsOptional()
