@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { ApiTags } from '@nestjs/swagger';
 import type { Request, Response } from 'express';
 import type { ValidatedEnvironment } from '../config/environment';
+import { AllowDuringPasswordChange } from './allow-during-password-change.decorator';
 import { AuthService } from './auth.service';
 import { type AuthenticatedRequest } from './auth.guard';
 import { type CurrentUserResponse, toCurrentUser } from './auth-user';
@@ -62,6 +63,7 @@ export class AuthController {
     return toCurrentUser(user);
   }
 
+  @AllowDuringPasswordChange()
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(
