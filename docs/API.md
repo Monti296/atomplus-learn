@@ -47,7 +47,7 @@ The local interactive Swagger documentation is available at `/api/docs`.
 
 | Method | Path | Purpose |
 |---|---|---|
-| GET, POST | /admin/users | List or create users (random temporary password returned once) |
+| GET, POST | /admin/users | List or create users (optional role: employee or admin, default employee; random temporary password returned once) |
 | PATCH | /admin/users/:id | Change name; block or unblock |
 | PATCH | /admin/users/:id/password | Reset password (user must change it at next login) |
 | DELETE | /admin/users/:id | Remove a user and all their data |
