@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import type { Request, Response } from 'express';
 import type { ValidatedEnvironment } from '../config/environment';
+import { ALLOW_DURING_PASSWORD_CHANGE_KEY } from './allow-during-password-change.decorator';
 import type { AuthUser } from './auth-user';
 import { IS_PUBLIC_KEY } from './public.decorator';
 import { SessionsService } from './sessions.service';
@@ -22,6 +24,11 @@ export interface AuthenticatedRequest extends Request {
   authUser: AuthUser;
   sessionId: string;
 }
+
+export const PASSWORD_CHANGE_REQUIRED_ERROR = {
+  code: 'PASSWORD_CHANGE_REQUIRED',
+  message: 'You must change your password before using this.',
+} as const;
 
 // Global guard: every route needs a valid session unless marked @Public().
 @Injectable()
@@ -57,6 +64,16 @@ export class AuthGuard implements CanActivate {
 
     request.authUser = active.user;
     request.sessionId = sessionId;
+
+    if (active.user.mustChangePassword) {
+      const allowed = this.reflector.getAllAndOverride<boolean | undefined>(
+        ALLOW_DURING_PASSWORD_CHANGE_KEY,
+        [context.getHandler(), context.getClass()],
+      );
+      if (!allowed) {
+        throw new ForbiddenException(PASSWORD_CHANGE_REQUIRED_ERROR);
+      }
+    }
 
     if (active.refreshed) {
       const domain = this.config.get('COOKIE_DOMAIN', { infer: true });

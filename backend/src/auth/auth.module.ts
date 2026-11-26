@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { LoginAttemptsService } from './login-attempts.service';
 import { MeController } from './me.controller';
 import { PasswordService } from './password/password.service';
+import { ProfileService } from './profile.service';
 import { SessionsService } from './sessions.service';
 import { SetupController } from './setup.controller';
 import { SetupService } from './setup.service';
@@ -16,6 +17,7 @@ import { SetupService } from './setup.service';
     AuthService,
     LoginAttemptsService,
     PasswordService,
+    ProfileService,
     SessionsService,
     SetupService,
     { provide: APP_GUARD, useClass: AuthGuard },
