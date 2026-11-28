@@ -1,16 +1,17 @@
-import { test } from 'node:test';
-import assert from 'node:assert/strict';
+import { expect, it } from 'vitest';
 import { navItems } from './navigation.ts';
 
-test('top bar shows the four employee links in order', () => {
-  assert.deepEqual(
-    navItems.map((item) => item.label),
-    ['Courses', 'My Batch', 'Certificates', 'My Profile'],
-  );
+it('top bar shows the four employee links in order', () => {
+  expect(navItems.map((item) => item.label)).toEqual([
+    'Courses',
+    'My Batch',
+    'Certificates',
+    'My Profile',
+  ]);
 });
 
-test('every link has a unique path that starts with a slash', () => {
+it('every link has a unique path that starts with a slash', () => {
   const paths = navItems.map((item) => item.path);
-  assert.ok(paths.every((path) => path.startsWith('/')));
-  assert.equal(new Set(paths).size, paths.length);
+  expect(paths.every((path) => path.startsWith('/'))).toBe(true);
+  expect(new Set(paths).size).toBe(paths.length);
 });

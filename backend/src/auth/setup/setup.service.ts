@@ -84,7 +84,7 @@ export class SetupService {
               passwordHash,
               role: UserRole.admin,
               status: UserStatus.active,
-              mustChangePassword: false,
+              mustChangePassword: true,
             },
           });
         },

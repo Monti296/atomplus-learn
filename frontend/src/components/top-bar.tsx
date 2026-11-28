@@ -4,10 +4,17 @@ import { navItems } from '../navigation';
 
 interface TopBarProps {
   userInitials: string;
+  // While a password must be changed, the page links are hidden so nothing leads away from that page.
+  showNavigation: boolean;
+  onLogout: () => void;
+  isLoggingOut: boolean;
 }
 
 const linkBaseClass =
   'inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+
+const logoutButtonClass =
+  'inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold text-ink transition hover:bg-lilac/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:opacity-60';
 
 function desktopLinkClass({ isActive }: { isActive: boolean }) {
   return `${linkBaseClass} ${isActive ? 'bg-ink text-white' : 'text-ink hover:bg-lilac/70'}`;
@@ -17,7 +24,12 @@ function mobileLinkClass({ isActive }: { isActive: boolean }) {
   return `${linkBaseClass} ${isActive ? 'bg-ink text-white' : 'text-ink hover:bg-lilac/70'} w-full`;
 }
 
-export function TopBar({ userInitials }: TopBarProps) {
+export function TopBar({
+  userInitials,
+  showNavigation,
+  onLogout,
+  isLoggingOut,
+}: TopBarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -25,27 +37,39 @@ export function TopBar({ userInitials }: TopBarProps) {
       <div className="flex items-center justify-between gap-4">
         <span className="text-lg font-bold text-ink">AtomPlus Learn</span>
 
-        <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={desktopLinkClass}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-        </nav>
+        {showNavigation && (
+          <nav aria-label="Main" className="hidden items-center gap-1 md:flex">
+            {navItems.map((item) => (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                className={desktopLinkClass}
+              >
+                {item.label}
+              </NavLink>
+            ))}
+          </nav>
+        )}
 
         <div className="flex items-center gap-2">
+          {showNavigation && (
+            <button
+              type="button"
+              className="inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:hidden"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              Menu
+            </button>
+          )}
           <button
             type="button"
-            className="inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent md:hidden"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            onClick={() => setMenuOpen((open) => !open)}
+            className={logoutButtonClass}
+            onClick={onLogout}
+            disabled={isLoggingOut}
           >
-            Menu
+            Log out
           </button>
           <span
             aria-label="Signed in user"
@@ -56,7 +80,7 @@ export function TopBar({ userInitials }: TopBarProps) {
         </div>
       </div>
 
-      {menuOpen && (
+      {showNavigation && menuOpen && (
         <nav
           id="mobile-menu"
           aria-label="Main mobile"

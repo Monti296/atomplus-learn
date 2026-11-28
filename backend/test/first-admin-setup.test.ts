@@ -143,7 +143,7 @@ describe('first-admin one-time setup (FR-1.6, SR-6)', () => {
     assert.equal(response.body.name, 'Asha Rao');
     assert.equal(response.body.email, 'admin@atomplus.in');
     assert.equal(response.body.role, 'admin');
-    assert.equal(response.body.mustChangePassword, false);
+    assert.equal(response.body.mustChangePassword, true);
     assert.equal(response.body.passwordHash, undefined);
     assert.equal(response.headers['set-cookie'], undefined);
 
@@ -151,6 +151,7 @@ describe('first-admin one-time setup (FR-1.6, SR-6)', () => {
       where: { email: 'admin@atomplus.in' },
     });
     assert.equal(stored.role, UserRole.admin);
+    assert.equal(stored.mustChangePassword, true);
     assert.notEqual(stored.passwordHash, PASSWORD);
     assert.equal(
       await new PasswordService().verify(stored.passwordHash, PASSWORD),

@@ -45,3 +45,4 @@ backups/
 *.sql
 *.sql.gz
 !backend/prisma/migrations/**/*.sql
+.neon

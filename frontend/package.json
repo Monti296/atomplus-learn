@@ -5,7 +5,7 @@
     "dev": "vite --host 127.0.0.1",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "node --test",
+    "test": "vitest run",
     "test:e2e": "node --test",
     "build": "tsc -p tsconfig.json && vite build"
   },
@@ -21,13 +21,17 @@
   },
   "devDependencies": {
     "@eslint/js": "9.17.0",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/react": "16.3.3",
     "@types/react": "^19.0.3",
     "@types/react-dom": "^19.0.2",
     "eslint": "9.17.0",
     "globals": "15.14.0",
+    "jsdom": "26.1.0",
     "prettier": "3.4.2",
     "typescript": "5.7.2",
-    "typescript-eslint": "8.18.0"
+    "typescript-eslint": "8.18.0",
+    "vitest": "4.1.12"
   },
   "type": "module"
 }
