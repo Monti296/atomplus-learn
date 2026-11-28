@@ -1,10 +1,13 @@
 import { Outlet } from 'react-router';
+import { useCurrentUser } from '../auth/current-user';
+import { useLogout } from '../auth/use-logout';
+import { initialsFor } from '../auth/initials';
 import { TopBar } from './top-bar';
 
-// Placeholder until login is built (T-012). The real initials come from the signed-in user.
-const placeholderInitials = 'AP';
-
 export function AppShell() {
+  const { data: user } = useCurrentUser();
+  const logout = useLogout();
+
   return (
     <div className="isolate min-h-dvh bg-page text-ink">
       <div
@@ -16,7 +19,14 @@ export function AppShell() {
         <div className="absolute -bottom-40 right-0 size-[30rem] rounded-full bg-accent/60 blur-3xl" />
       </div>
 
-      <TopBar userInitials={placeholderInitials} />
+      {user && (
+        <TopBar
+          userInitials={initialsFor(user.name)}
+          showNavigation={!user.mustChangePassword}
+          onLogout={() => logout.mutate()}
+          isLoggingOut={logout.isPending}
+        />
+      )}
 
       <main className="mx-auto w-full max-w-6xl px-4 py-8 md:px-8 md:py-12">
         <Outlet />
